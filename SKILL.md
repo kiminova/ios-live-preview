@@ -40,6 +40,7 @@ The script reads `.ios-preview` in the project's folder. If there is none:
 ## Rules
 
 - Use these two simulators and no others. Don't create or boot another simulator for a test, a recording or a check. If another one is booted, shut it down (`xcrun simctl shutdown <udid>`). Never delete a simulator.
+- **The simulator panel is the developer's view.** Claude Code's simulator panel holds both simulators side by side. Attaching, detaching, or taking a screenshot or tapping through the simulator tool with a device named can take one of them out of the panel or swap it. Don't attach or detach the panel unless the developer says a simulator is missing. Look at a simulator from the terminal instead: `xcrun simctl io <udid> screenshot <file>`, then read the file. Use the tool's taps and swipes only when a check needs them, and say so first.
 - The App Clip goes on the phone after the app, every time, because installing the full app removes its Clip. The script does it in that order.
 - Options: `--no-phone` (the simulators only), `--no-build` (reinstall the last simulator build, the phone skipped).
 
