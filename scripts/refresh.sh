@@ -6,7 +6,7 @@
 #   your iPhone    the app (and its App Clip, if it has one)
 #
 # Run it from the project's folder. It reads `.ios-preview` there (shell variables, below), creates the two simulators
-# if they are missing, boots them, builds the app from the working tree, installs and launches it in both, then builds
+# if they are missing, boots them, shuts down any other simulator that is running (other projects' Light and Dark pairs excepted), builds the app from the working tree, installs and launches it in both, then builds
 # and installs the app (and the Clip) on the first iPhone connected. A phone that can't be reached is a note at the end,
 # never a failure: the simulators are refreshed all the same.
 #
@@ -101,6 +101,24 @@ for udid in $light $dark; do
 done
 xcrun simctl ui "$light" appearance light
 xcrun simctl ui "$dark" appearance dark
+
+# Only these two run, besides other projects' live-preview pairs. Another booted simulator (one Xcode's Run button, a
+# preview or another session started) can take one of their places in a simulator panel when it reconnects, for
+# instance after the Mac's display has slept. A simulator of a pair named "<Other> Light" and "<Other> Dark" is another
+# project's live preview and is left alone.
+xcrun simctl list devices -j | /usr/bin/python3 -c '
+import json, sys
+devices = [d for ds in json.load(sys.stdin)["devices"].values() for d in ds]
+booted = [d for d in devices if d["state"] == "Booted"]
+names = {d["name"] for d in devices}
+def preview_pair(name):  # one of a pair "<Name> Light" and "<Name> Dark": another project, left alone
+    return any(name.endswith(a) and name[: -len(a)] + b in names for a, b in ((" Light", " Dark"), (" Dark", " Light")))
+for d in booted:
+    if d["udid"] not in sys.argv[1:] and not preview_pair(d["name"]):
+        print(d["udid"] + "\t" + d["name"])
+' "$light" "$dark" | while IFS=$'\t' read -r other other_name; do
+    xcrun simctl shutdown "$other" && echo "shut down $other_name ($other): not $NAME Light or Dark, nor a live-preview pair" >&2
+done
 
 if (( build )); then
     echo "building $SCHEME" >&2

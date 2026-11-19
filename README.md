@@ -42,6 +42,12 @@ LAUNCH_ARGS=(-demo YES)       # optional: how the app is launched in the simulat
 
 Optional too: `WORKSPACE` or `PROJECT` when the folder has several, `DEVICE_TYPE` for another simulator than the newest iPhone Pro, and `PHONE` (a udid) when more than one iPhone is paired.
 
+In Xcode, set the run destination (the device menu in the toolbar) to **MyApp Light** for each scheme you run. Xcode remembers one per scheme, and otherwise its Run button boots a third simulator.
+
+Each refresh shuts down any other booted simulator, because one left running can take a place in a simulator panel when it reconnects, for instance after the Mac's display has slept. Another project's live preview is left alone: a pair named "<Other> Light" and "<Other> Dark", even one of them running alone. Anything else, an iPad or an older iOS you started yourself included, is shut down (never deleted).
+
+If an agent runs the app through Xcode's own tools (Xcode's MCP server), it checks their run destination first: that service keeps its own, apart from the Xcode app's.
+
 From then on it runs by itself. You can also run it yourself:
 
 ```bash
