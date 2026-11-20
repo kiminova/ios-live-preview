@@ -3,7 +3,7 @@ name: ios-live-preview
 description: Keep two iOS simulators (one in light mode, one in dark) and the developer's iPhone on the latest build of the app, refreshed after every change, so they can look at the work at any moment. Use at the start of a session in an iOS project and after every change you build, when the user wants to see the app on their simulators or phone, or asks to set up a live preview.
 ---
 
-# iOS live preview
+# Claude iOS preview
 
 The developer wants to see your work at any moment, in three places, always on the latest build:
 
